@@ -1,0 +1,24 @@
+Hexed Game
+
+Concept:
+Game that challenges to you to enter the binary representation of hex values and vice versa. 
+
+Components:
+Arduino Nano Clone
+Two 32*128 Oleds with SSD1306 I2C Drivers
+8 tactile switches
+rotary encoder
+piezo buzzer
+18650 battery with boost charge circuit salvaged from power bank
+power switch
+power led
+
+Build Plan
+Get basic game functions working over serial with a nano
+Draw Schematic
+Wait for parts
+solder onto proto board using headers for screens and nano
+Get concept working
+Make and order pcb
+3d print case
+Assembly and final software
