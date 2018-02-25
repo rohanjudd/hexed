@@ -1,15 +1,16 @@
 // Hexed Game 
 // Rohan Judd Feb 2018
 
-class Target
+class Hex_Byte
 {
   byte value = 0;
   byte high = 0;
   byte low = 0;
   
   public:
-  Target(byte b)
+  Hex_Byte(byte b)
   {
+    set_value(b);
   }
 
   void set_value(byte b)
@@ -42,15 +43,9 @@ class Target
   String get_hex_string()
   {
     String output = "";
-    output += String(high,HEX);
-    output += String(low,HEX);
+    output += nibble_to_char(high);
+    output += nibble_to_char(low);
     return output;
-  }
-
-  String get_hex_string2()
-  {
-    String output = "";
-    return "";
   }
 
   char nibble_to_char(byte b)
@@ -69,22 +64,31 @@ class Target
 byte guess = 0;
 int score = 0;
 
-Target target(0);
+Hex_Byte target(0);
 
 void setup() 
 {
   Serial.begin(115200);
   while(!Serial)
   Serial.println("Hexed");
-  Serial.println(target.get_value());
-  Serial.println(target.get_hex_string());
+  print_target();
 }
 
 void loop() 
 {
   target.generate();
-  Serial.println(target.get_value());
-  Serial.println(target.get_hex_string());
-  Serial.println(target.get_hex_string());
+  print_target();
   delay(400);
 }
+
+void print_target()
+{
+  Serial.print("DEC: ");
+  Serial.print(target.get_value());
+  Serial.print("  HEX: ");
+  Serial.println(target.get_hex_string());
+}
+
+
+
+  
