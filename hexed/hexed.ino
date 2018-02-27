@@ -20,10 +20,7 @@ class Hex_Byte
     low = value & 0x0F;
   }
 
-  byte get_value()
-  {
-    return value;
-  }
+  byte get_value(){return value;}
 
   byte get_high()
   {
