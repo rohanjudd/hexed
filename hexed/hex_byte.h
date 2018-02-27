@@ -16,12 +16,13 @@ class Hex_Byte
 	  byte get_low();
 	  void generate();
 	  String get_hex_string();
+	  String get_binary_string();
 	  char nibble_to_ascii(byte b);
   
   private:
-	  byte _value = 0;
-	  byte _high = 0;
-	  byte _low = 0;
+	  byte _value;
+	  byte _high;
+	  byte _low;
 };
 
 #endif
