@@ -27,6 +27,7 @@ void loop()
     Serial.print("");
     Serial.println(receivedChars);
     newData = false;
+    check_for_mode_change();
     byte input = parse_binary_input(receivedChars);
     hex_game.set_guess(input);
     if (hex_game.check_guess())
@@ -37,14 +38,26 @@ void loop()
     else
     {
       Serial.println("Try Again");
+      hex_game.show_target();
     }
   }
 }
 
+void check_for_mode_change()
+{
+  if(receivedChars[0] == 'm')
+  {
+    if(isDigit(receivedChars[1]))
+    {
+      Serial.print("HERE:   ");
+      Serial.println(receivedChars[1] - 48);
+      hex_game.change_mode(receivedChars[1] - 48);
+    }
+  }
+}
 void new_target()
 {
   hex_game.new_target();
-  print_hex(hex_game.get_target());
 }
 
 void print_all_formats(byte b)

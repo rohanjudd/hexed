@@ -10,6 +10,8 @@ class Game
   public:
 	  Game(byte mode);
 	  void new_target();
+    void show_target();
+    void change_mode(int m);
     byte get_target();
 	  void set_guess(byte b);
     boolean check_guess();
