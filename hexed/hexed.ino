@@ -12,26 +12,39 @@ Game hex_game(0);
 
 void setup()
 {
+  pinMode(A0, INPUT);
+  randomSeed(analogRead(A0));
   Serial.begin(115200);
   Serial.println("Hexed");
-  hex_game.new_target(generate_byte());
-  print_all_formats(hex_game.get_target());
+  new_target();
 }
 
 void loop()
 {
-  
   recvWithEndMarker();
   if (newData == true)
   {
     Serial.print("");
     Serial.println(receivedChars);
     newData = false;
-    Serial.println(parse_binary_input(receivedChars));
+    byte input = parse_binary_input(receivedChars);
+    hex_game.set_guess(input);
+    if (hex_game.check_guess())
+    {
+      Serial.println("Correct");
+      new_target();
+    }
+    else
+    {
+      Serial.println("Try Again");
+    }
   }
-  //target = generate_byte();
-  //print_target();
-  //delay(400);
+}
+
+void new_target()
+{
+  hex_game.new_target();
+  print_hex(hex_game.get_target());
 }
 
 void print_all_formats(byte b)
@@ -42,6 +55,12 @@ void print_all_formats(byte b)
   Serial.print(get_hex_string(b));
   Serial.print("  BIN: ");
   Serial.println(get_binary_string(b));
+}
+
+void print_hex(byte b)
+{
+  Serial.print("0x ");
+  Serial.println(get_hex_string(b));
 }
 
 void recvWithEndMarker()

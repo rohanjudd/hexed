@@ -68,4 +68,3 @@ byte parse_binary_input(char c[])
   }
   return b;
 }
-

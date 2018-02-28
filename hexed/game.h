@@ -9,10 +9,10 @@ class Game
 {
   public:
 	  Game(byte mode);
-	  void new_target(byte b);
+	  void new_target();
     byte get_target();
 	  void set_guess(byte b);
-    void try_guess();
+    boolean check_guess();
 
   private:
     boolean solved = false;
