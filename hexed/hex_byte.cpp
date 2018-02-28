@@ -1,75 +1,71 @@
 /*
-hex_byte.cpp - Class for hex byte object
+  hex_byte.cpp - Class for hex byte object
 */
 #include "Arduino.h"
 #include "hex_byte.h"
 
-
-Hex_Byte::Hex_Byte(byte b)
+byte get_high(byte b)
 {
-	set_value(b);	
+  return b >> 4;
 }
 
-void Hex_Byte::set_value(byte b)
+byte get_low(byte b)
 {
-	_value = b;
-	_high = _value >> 4;
-	_low = _value & 0x0F;
+  return b & 0x0F;
 }
 
-byte Hex_Byte::get_value()
+byte generate_byte()
 {
-	return _value;
+  return byte(random(0, 255));
 }
 
-byte Hex_Byte::get_high()
+String get_hex_string(byte b)
 {
-	return _value >> 4;
+  String output = "";
+  output += nibble_to_ascii(get_high(b));
+  output += nibble_to_ascii(get_low(b));
+  return output;
 }
 
-byte Hex_Byte::get_low()
+char nibble_to_ascii(byte b)
 {
-	return _value & 0x0F;
+  if (b < 10)
+  {
+    return b + 48;
+  }
+  else
+  {
+    return b - 10 + 65;
+  }
 }
 
-void Hex_Byte::generate()
+String get_binary_string(byte b)
 {
-	set_value(random(0,255));
+  String output = "";
+  for (int i = 7; i >= 0; i--)
+  {
+    if bitRead(b, i)
+    {
+      output += "1";
+    }
+    else
+    {
+      output += "0";
+    }
+  }
+  return output;
 }
 
-String Hex_Byte::get_hex_string()
+byte parse_binary_input(char c[])
 {
-	String output = "";
-	output += nibble_to_ascii(_high);
-	output += nibble_to_ascii(_low);
-	return output;
+  byte b  = 0;
+  for(int i = 0; i < 8; i++)
+  {
+    if(c[i] == '1')
+    {
+      bitSet(b, 7 - i);
+    }
+  }
+  return b;
 }
 
-char Hex_Byte::nibble_to_ascii(byte b)
-{
-	if(b < 10)
-	{
-	  return b + 48;
-	}
-	else
-	{
-	  return b - 10 + 65;
-	}
-}
-
-String Hex_Byte::get_binary_string()
-{
-	String output = "";
-	for(int i=7; i>=0; i--)
-	{
-		if bitRead(_value, i)
-		{
-			output+= "1";
-		}
-		else
-		{
-			output+= "0";
-		}
-	}
-	return output;
-}
