@@ -13,14 +13,12 @@ class Game
     void show_target();
     void change_mode(int m);
     byte get_target();
-	  void set_guess(byte b);
-    boolean check_guess();
+    void check_guess(char c[]);
 
   private:
     boolean solved = false;
 	  byte _mode;
 	  byte _target;
-	  byte _guess;
 	  int _score;
 };
 

@@ -5,12 +5,15 @@
 #include "game.h"
 #include "hex_byte.h"
 
-// Mode 0 HEX to BIN
-// Mode 1 HEX to DEC
-// Mode 2 BIN to HEX
-// Mode 3 BIN to DEC
-// Mode 4 DEC to BIN
-// Mode 5 DEC to HEX
+// Mode 0 BIN to HEX
+// Mode 1 DEC to HEX
+// Mode 2 HEX to BIN
+// Mode 3 DEC to BIN
+// Mode 4 BIN to DEC
+// Mode 5 HEX to DEC
+
+String MODES[6] = {"BIN -> HEX", "DEC -> HEX", "HEX -> BIN", 
+                         "DEC -> BIN", "BIN -> DEC", "HEX -> DEC"};
 
 Game::Game(byte mode)
 {
@@ -20,7 +23,6 @@ Game::Game(byte mode)
 void Game::new_target()
 {
   _target = random(0, 255);
-  _guess = 0;
   show_target();
 }
 
@@ -41,7 +43,8 @@ byte Game::get_target()
 void Game::show_target()
 {
   String output = "";
-  switch (_mode) {
+  switch (_mode)
+  {
     case 0:
       output += get_hex_string(_target);
       break;
@@ -49,10 +52,10 @@ void Game::show_target()
       output += get_hex_string(_target);
       break;
     case 2:
-      output += "Not Implemented";
+      output += get_binary_string(_target);
       break;
     case 3:
-      output += "Not Implemented";
+      output += get_binary_string(_target);
       break;
     case 4:
       output += String(_target);
@@ -64,19 +67,48 @@ void Game::show_target()
       output = "Invalid Mode";
       break;
   }
-  Serial.print("MODE: ");
-  Serial.print(_mode);
+  Serial.print(MODES[_mode]);
   Serial.print("  Target: ");
   Serial.println(output);
 }
-void Game::set_guess(byte b)
-{
-  _guess = b;
-}
 
-boolean Game::check_guess()
+void Game::check_guess(char c[])
 {
-  return (_guess == _target);
+  byte input = 0;
+  switch (_mode)
+  {
+    case 0:
+      input =  parse_binary_input(c);
+      break;
+    case 1:
+      input = 0;
+      break;
+    case 2:
+      input =  parse_hex_input(c);
+      break;
+    case 3:
+      input = 0;
+      break;
+    case 4:
+      input =  parse_binary_input(c);
+      break;
+    case 5:
+      input =  parse_hex_input(c);
+      break;
+    default:
+      Serial.println("Invalid Mode");
+      break;
+  }
+  if (input == _target)
+  {
+    Serial.println("Correct");
+    new_target();
+  }
+  else
+  {
+    Serial.println("Try Again");
+    show_target();
+  }
 }
 
 

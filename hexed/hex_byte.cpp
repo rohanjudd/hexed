@@ -68,3 +68,32 @@ byte parse_binary_input(char c[])
   }
   return b;
 }
+
+byte parse_hex_input(char c[])
+{
+  byte b  = 0;
+  b += hex_ascii_to_byte(c[0]);
+  b = b << 4;
+  b += hex_ascii_to_byte(c[1]);
+  return b;
+}
+
+byte parse_decimal_input(char c[])
+{
+  byte b  = 0;
+  return b;
+}
+
+byte hex_ascii_to_byte(char c)
+{
+  if(c >= 48 && c <= 57)
+  {
+    return c - 48;
+  }
+  if(c >= 65 && c <= 70)
+  {
+    return c - 65 + 10;
+  }
+  return 0;
+}
+

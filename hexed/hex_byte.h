@@ -13,5 +13,8 @@ String get_hex_string(byte b);
 String get_binary_string(byte b);
 char nibble_to_ascii(byte b);
 byte parse_binary_input(char c[]);
+byte parse_hex_input(char c[]);
+byte parse_decimal_input(char c[]);
+byte hex_ascii_to_byte(char c);
 
 #endif

@@ -24,37 +24,28 @@ void loop()
   recvWithEndMarker();
   if (newData == true)
   {
-    Serial.print("");
     Serial.println(receivedChars);
     newData = false;
-    check_for_mode_change();
-    byte input = parse_binary_input(receivedChars);
-    hex_game.set_guess(input);
-    if (hex_game.check_guess())
+    if (!check_for_mode_change())
     {
-      Serial.println("Correct");
-      new_target();
-    }
-    else
-    {
-      Serial.println("Try Again");
-      hex_game.show_target();
+      hex_game.check_guess(receivedChars);
     }
   }
 }
 
-void check_for_mode_change()
+boolean check_for_mode_change()
 {
   if(receivedChars[0] == 'm')
   {
     if(isDigit(receivedChars[1]))
     {
-      Serial.print("HERE:   ");
-      Serial.println(receivedChars[1] - 48);
       hex_game.change_mode(receivedChars[1] - 48);
+      return true;
     }
   }
+  return false;
 }
+
 void new_target()
 {
   hex_game.new_target();
