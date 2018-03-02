@@ -5,15 +5,12 @@
 #include "game.h"
 #include "hex_byte.h"
 
-// Mode 0 BIN to HEX
-// Mode 1 DEC to HEX
-// Mode 2 HEX to BIN
-// Mode 3 DEC to BIN
-// Mode 4 BIN to DEC
-// Mode 5 HEX to DEC
-
-String MODES[6] = {"BIN -> HEX", "DEC -> HEX", "HEX -> BIN", 
-                         "DEC -> BIN", "BIN -> DEC", "HEX -> DEC"};
+String MODES[6] = {"HEX -> BIN", 
+                   "HEX -> DEC", 
+                   "BIN -> HEX", 
+                   "BIN -> DEC", 
+                   "DEC -> BIN", 
+                   "DEC -> HEX"};
 
 Game::Game(byte mode)
 {
@@ -67,9 +64,9 @@ void Game::show_target()
       output = "Invalid Mode";
       break;
   }
-  Serial.print(MODES[_mode]);
-  Serial.print("  Target: ");
-  Serial.println(output);
+  Serial.print(output);
+  Serial.print("  ");
+  Serial.println(MODES[_mode]);
 }
 
 void Game::check_guess(char c[])
@@ -81,13 +78,13 @@ void Game::check_guess(char c[])
       input =  parse_binary_input(c);
       break;
     case 1:
-      input = 0;
+      input = parse_decimal_input(c);
       break;
     case 2:
       input =  parse_hex_input(c);
       break;
     case 3:
-      input = 0;
+      input = parse_decimal_input(c);
       break;
     case 4:
       input =  parse_binary_input(c);

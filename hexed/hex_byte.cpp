@@ -80,8 +80,7 @@ byte parse_hex_input(char c[])
 
 byte parse_decimal_input(char c[])
 {
-  byte b  = 0;
-  return b;
+  return atoi(c);
 }
 
 byte hex_ascii_to_byte(char c)
