@@ -5,16 +5,15 @@
 #include "game.h"
 #include "hex_byte.h"
 
-String MODES[6] = {"HEX -> BIN", 
-                   "HEX -> DEC", 
-                   "BIN -> HEX", 
-                   "BIN -> DEC", 
-                   "DEC -> BIN", 
-                   "DEC -> HEX"};
+static String FORMAT[3] = {"HEX","BIN","DEC"};
+// 0 HEX
+// 1 BIN
+// 2 DEC
 
-Game::Game(byte mode)
+Game::Game(byte arg)
 {
-  _mode = mode;
+  _input_mode = 0;
+  _output_mode = 1;
 }
 
 void Game::new_target()
@@ -23,11 +22,22 @@ void Game::new_target()
   show_target();
 }
 
-void Game::change_mode(int m)
+void Game::change_input_mode()
 {
-  if ( m >= 0 && m < 6 && m != _mode)
+  _input_mode = (_input_mode +1 ) % 3;
+  if(_input_mode == _output_mode)
   {
-    _mode = m;
+    _input_mode = (_input_mode + 1) % 3;
+  }
+  new_target();
+}
+
+void Game::change_output_mode()
+{
+  _output_mode = (_output_mode +1 ) % 3;
+  if(_output_mode == _input_mode)
+  {
+    _output_mode = (_output_mode + 1) % 3;
   }
   new_target();
 }
@@ -39,64 +49,49 @@ byte Game::get_target()
 
 void Game::show_target()
 {
-  String output = "";
-  switch (_mode)
+  String target_text = "";
+  switch (_output_mode)
   {
     case 0:
-      output += get_hex_string(_target);
+      target_text += get_hex_string(_target);
       break;
     case 1:
-      output += get_hex_string(_target);
+      target_text += get_binary_string(_target);
       break;
     case 2:
-      output += get_binary_string(_target);
-      break;
-    case 3:
-      output += get_binary_string(_target);
-      break;
-    case 4:
-      output += String(_target);
-      break;
-    case 5:
-      output += String(_target);
+      target_text += String(_target);
       break;
     default:
-      output = "Invalid Mode";
+      target_text = "Invalid Mode";
       break;
   }
-  Serial.print(output);
+  Serial.print(target_text);
   Serial.print("  ");
-  Serial.println(MODES[_mode]);
+  Serial.print(FORMAT[_input_mode]);
+  Serial.print(" -> ");
+  Serial.println(FORMAT[_output_mode]);
+  
 }
 
 void Game::check_guess(char c[])
 {
-  byte input = 0;
-  switch (_mode)
+  byte guess = 0;
+  switch (_input_mode)
   {
     case 0:
-      input =  parse_binary_input(c);
+      guess =  parse_hex_input(c);
       break;
     case 1:
-      input = parse_decimal_input(c);
-      break;
-    case 2:
-      input =  parse_hex_input(c);
+      guess =  parse_binary_input(c);
       break;
     case 3:
-      input = parse_decimal_input(c);
-      break;
-    case 4:
-      input =  parse_binary_input(c);
-      break;
-    case 5:
-      input =  parse_hex_input(c);
+      guess = parse_decimal_input(c);
       break;
     default:
       Serial.println("Invalid Mode");
       break;
   }
-  if (input == _target)
+  if (guess == _target)
   {
     Serial.println("Correct");
     new_target();
