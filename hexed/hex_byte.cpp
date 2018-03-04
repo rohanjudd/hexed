@@ -44,14 +44,7 @@ String get_binary_string(byte b)
   String output = "";
   for (int i = 7; i >= 0; i--)
   {
-    if bitRead(b, i)
-    {
-      output += "1";
-    }
-    else
-    {
-      output += "0";
-    }
+    (bitRead(b, i)) ? (output += "1") : (output += "0");
   }
   return output;
 }
