@@ -11,6 +11,10 @@
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
 
+const int c = 261;
+const int d = 294;
+const int e = 329;
+
 const byte numChars = 9;
 char receivedChars[numChars]; // an array to store the received data
 boolean newData = false;
@@ -64,9 +68,13 @@ void loop()
   
   update_guess();
   debug_byte("guess", guess);
-  hex_game.check_guess(guess);
   update_screen();
   delay(50);
+  if(hex_game.check_guess(guess))
+  {
+    beep();
+    guess = 0;
+  }
 }
 
 void update_screen()
@@ -102,6 +110,16 @@ boolean check_for_mode_change()
     }
   }
   return false;
+}
+
+void beep()
+{
+  tone(piezo, c, 80);
+  delay(80);
+  tone(piezo, e, 80);
+  delay(100);
+  tone(piezo, c, 80);
+  delay(200);
 }
 
 void new_target()

@@ -17,7 +17,7 @@ class Game
     void change_output_mode();
     String target_to_string();
     void check_guess(char c[]);
-    void check_guess(byte b);
+    boolean check_guess(byte b);
 
   private:
     byte _input_mode;

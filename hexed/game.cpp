@@ -107,16 +107,16 @@ void Game::check_guess(char c[])
   }
 }
 
-void Game::check_guess(byte b)
+boolean Game::check_guess(byte b)
 {
   if (b == _target)
   {
-    Serial.println("Correct");
     new_target();
+    return true;
   }
   else
   {
-    Serial.println("Try Again");
+    return false;
   }
 }
 
