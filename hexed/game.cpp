@@ -12,14 +12,19 @@ static String FORMAT[3] = {"HEX","BIN","DEC"};
 
 Game::Game(byte arg)
 {
-  _input_mode = 0;
-  _output_mode = 1;
+  _input_mode = 1;
+  _output_mode = 0;
 }
 
 void Game::new_target()
 {
   _target = random(0, 255);
   show_target();
+}
+
+byte Game::get_target()
+{
+  return _target;
 }
 
 void Game::change_input_mode()
@@ -42,12 +47,16 @@ void Game::change_output_mode()
   new_target();
 }
 
-byte Game::get_target()
+void Game::show_target()
 {
-  return _target;
+  Serial.print(target_to_string());
+  Serial.print("  ");
+  Serial.print(FORMAT[_input_mode]);
+  Serial.print(" -> ");
+  Serial.println(FORMAT[_output_mode]);
 }
 
-void Game::show_target()
+String Game::target_to_string()
 {
   String target_text = "";
   switch (_output_mode)
@@ -65,12 +74,7 @@ void Game::show_target()
       target_text = "Invalid Mode";
       break;
   }
-  Serial.print(target_text);
-  Serial.print("  ");
-  Serial.print(FORMAT[_input_mode]);
-  Serial.print(" -> ");
-  Serial.println(FORMAT[_output_mode]);
-  
+  return target_text;
 }
 
 void Game::check_guess(char c[])
@@ -103,4 +107,16 @@ void Game::check_guess(char c[])
   }
 }
 
+void Game::check_guess(byte b)
+{
+  if (b == _target)
+  {
+    Serial.println("Correct");
+    new_target();
+  }
+  else
+  {
+    Serial.println("Try Again");
+  }
+}
 

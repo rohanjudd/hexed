@@ -11,10 +11,13 @@ class Game
 	  Game(byte mode);
 	  void new_target();
     void show_target();
+    byte get_target();
+    String get_target_string();
     void change_input_mode();
     void change_output_mode();
-    byte get_target();
+    String target_to_string();
     void check_guess(char c[]);
+    void check_guess(byte b);
 
   private:
     byte _input_mode;
