@@ -21,69 +21,37 @@ byte generate_byte()
 
 String get_hex_string(byte b)
 {
-  String output = "";
-  output += nibble_to_ascii(get_high(b));
-  output += nibble_to_ascii(get_low(b));
-  return output;
+  String s = "";
+  s += nibble_to_ascii(get_high(b));
+  s += nibble_to_ascii(get_low(b));
+  return s;
 }
 
 char nibble_to_ascii(byte b)
 {
-  if (b < 10)
-  {
+  if(b < 10){
     return b + 48;
   }
-  else
-  {
+  else{
     return b - 10 + 65;
   }
 }
 
 String get_binary_string(byte b)
 {
-  String output = "";
-  for (int i = 7; i >= 0; i--)
-  {
-    (bitRead(b, i)) ? (output += "1") : (output += "0");
+  String s = "";
+  for (int i = 7; i >= 0; i--){
+    (bitRead(b, i)) ? (s += "1") : (s += "0");
   }
-  return output;
-}
-
-byte parse_binary_input(char c[])
-{
-  byte b  = 0;
-  for(int i = 0; i < 8; i++)
-  {
-    if(c[i] == '1')
-    {
-      bitSet(b, 7 - i);
-    }
-  }
-  return b;
-}
-
-byte parse_hex_input(char c[])
-{
-  byte b  = 0;
-  b += hex_ascii_to_byte(c[0]);
-  b = b << 4;
-  b += hex_ascii_to_byte(c[1]);
-  return b;
-}
-
-byte parse_decimal_input(char c[])
-{
-  return atoi(c);
+  return s;
 }
 
 byte hex_ascii_to_byte(char c)
 {
-  if(c >= 48 && c <= 57)
-  {
+  if(c >= 48 && c <= 57){
     return c - 48;
   }
-  if(c >= 65 && c <= 70)
-  {
+  if(c >= 65 && c <= 70){
     return c - 65 + 10;
   }
   return 0;

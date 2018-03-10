@@ -11,15 +11,7 @@
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
 
-const int c = 261;
-const int d = 294;
-const int e = 329;
-
-const byte numChars = 9;
-char receivedChars[numChars]; // an array to store the received data
-boolean newData = false;
-
-byte buttons[10] = {4, 5, 6, 7, 8, 9, 10, 12, 14, 15};
+byte bit_button[8] = {4, 5, 6, 7, 8, 9, 10, 12};
 byte button_byte = 0;
 byte last_button_byte = 0;
 byte new_presses = 0;
@@ -27,6 +19,8 @@ byte guess = 0;
 byte pot = 17;
 byte led1 = 2;
 byte led2 = 3;
+byte button_a = 14;
+byte button_b = 15;
 byte piezo = 11;
 boolean state = false;
 int freq = 0;
@@ -35,23 +29,21 @@ Game hex_game(0);
 
 void setup()
 {
-  pinMode(16, INPUT);
-  randomSeed(analogRead(16));
-  
-  for (int i = 0; i <= 10; i++)
-  {
-    pinMode(buttons[i], INPUT_PULLUP);
+  for (int i = 0; i < 9; i++){
+    pinMode(bit_button[i], INPUT_PULLUP);
   }
   pinMode(pot, INPUT);
   pinMode(led1, OUTPUT);
   pinMode(led2, OUTPUT);
   pinMode(piezo, OUTPUT);
+  pinMode(16, INPUT);
+  randomSeed(analogRead(16));
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   display.display();
   display.setTextSize(2);
   display.setTextColor(WHITE);
-  delay(100);
+  delay(1500);
   
   Serial.begin(115200);
   Serial.println("Hexed");
@@ -73,6 +65,7 @@ void loop()
   if(hex_game.check_guess(guess))
   {
     beep();
+    delay(200);
     guess = 0;
   }
 }
@@ -86,40 +79,14 @@ void update_screen()
   display.println(get_binary_string(guess));
   display.display();
 }
-void check_serial()
-{
-  recvWithEndMarker();
-  if (newData == true)
-  {
-    Serial.println(receivedChars);
-    newData = false;
-    if (!check_for_mode_change())
-    {
-      hex_game.check_guess(receivedChars);
-    }
-  }
-}
-boolean check_for_mode_change()
-{
-  if(receivedChars[0] == 'm')
-  {
-    if(isDigit(receivedChars[1]))
-    {
-      //hex_game.change_mode(receivedChars[1] - 48);
-      return true;
-    }
-  }
-  return false;
-}
 
 void beep()
 {
-  tone(piezo, c, 80);
-  delay(80);
-  tone(piezo, e, 80);
-  delay(100);
-  tone(piezo, c, 80);
-  delay(200);
+  for(int i=1912; i<=3038; i+=30){
+    tone(piezo,i);
+    delay(4);
+  }
+  noTone(piezo);
 }
 
 void new_target()
@@ -143,39 +110,12 @@ void print_hex(byte b)
   Serial.println(get_hex_string(b));
 }
 
-void recvWithEndMarker()
-{
-  static byte ndx = 0;
-  char endMarker = '\n';
-  char rc;
-
-  while (Serial.available() > 0 && newData == false)
-  {
-    rc = Serial.read();
-    if (rc != endMarker)
-    {
-      receivedChars[ndx] = rc;
-      ndx++;
-      if (ndx >= numChars)
-      {
-        ndx = numChars - 1;
-      }
-    }
-    else
-    {
-      receivedChars[ndx] = '\0'; // terminate the string
-      ndx = 0;
-      newData = true;
-    }
-  }
-}
-
 byte get_button_byte()
 {
   byte output = 0;
   for (int i = 0; i <= 8; i++)
   {
-    (!digitalRead(buttons[i])) ? (bitSet(output, i)) : (0);
+    (!digitalRead(bit_button[i])) ? (bitSet(output, i)) : (0);
   }
   return output;
 }
