@@ -12,8 +12,10 @@ class Game
 	  void new_target();
     byte get_target();
     String get_target_string();
+    byte get_input_mode();
     void change_input_mode();
     void change_output_mode();
+    void change_mode();
     String target_to_string();
     boolean check_guess(byte b);
 

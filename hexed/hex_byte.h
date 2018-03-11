@@ -8,6 +8,8 @@
 
 byte get_high(byte b);
 byte get_low(byte b);
+byte set_high(byte b, byte c);
+byte set_low(byte b, byte c);
 byte generate_byte();
 String get_hex_string(byte b);
 String get_binary_string(byte b);

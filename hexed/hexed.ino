@@ -20,6 +20,7 @@ byte pot = 17;
 byte led1 = 2;
 byte led2 = 3;
 byte button_a = 14;
+boolean button_a_last = false;
 byte button_b = 15;
 byte piezo = 11;
 boolean state = false;
@@ -29,9 +30,11 @@ Game hex_game(0);
 
 void setup()
 {
-  for (int i = 0; i < 9; i++){
+  for (int i = 0; i < 9; i++) {
     pinMode(bit_button[i], INPUT_PULLUP);
   }
+  pinMode(button_a, INPUT_PULLUP);
+  pinMode(button_b, INPUT_PULLUP);
   pinMode(pot, INPUT);
   pinMode(led1, OUTPUT);
   pinMode(led2, OUTPUT);
@@ -44,80 +47,98 @@ void setup()
   display.setTextSize(2);
   display.setTextColor(WHITE);
   delay(1500);
-  
+
   Serial.begin(115200);
   Serial.println("Hexed");
-  new_target();
+  hex_game.new_target();
 }
 
 void loop()
 {
-  button_byte = get_button_byte();
-  debug_byte("button_byte", button_byte);
-
-  update_new_presses();
-  debug_byte("new presses", new_presses);
-  
-  update_guess();
-  debug_byte("guess", guess);
+  check_for_mode_change();
+  if(hex_game.get_input_mode()){
+    update_guess_binary();
+  }
+  else{
+    update_guess_hex();
+  }
   update_screen();
+  check_guess();
   delay(50);
-  if(hex_game.check_guess(guess))
-  {
+}
+
+void check_for_mode_change()
+{
+  if (!digitalRead(button_a)) {
+    Serial.println("button_a pressed");
+    if (!button_a_last) {
+      hex_game.change_mode();
+      guess = 0;
+    }
+    button_a_last = true;
+  }
+  else {
+    button_a_last = false;
+  }
+}
+
+void check_guess()
+{
+  if (hex_game.check_guess(guess)) {
     beep();
     delay(200);
     guess = 0;
   }
 }
-
 void update_screen()
 {
   display.clearDisplay();
-  display.setCursor(0,0);
+  display.setCursor(0, 0);
   display.println(hex_game.target_to_string());
-  display.setCursor(0,16);
-  display.println(get_binary_string(guess));
+  display.setCursor(0, 16);
+  if(hex_game.get_input_mode()){
+    display.println(get_binary_string(guess));
+  }
+  else{
+    display.println(get_hex_string(guess));
+  }
   display.display();
 }
 
 void beep()
 {
-  for(int i=1912; i<=3038; i+=30){
-    tone(piezo,i);
-    delay(4);
+  for (int i = 1912; i <= 3038; i += 30) {
+    tone(piezo, i);
+    delay(3);
   }
   noTone(piezo);
-}
-
-void new_target()
-{
-  hex_game.new_target();
-}
-
-void print_all_formats(byte b)
-{
-  Serial.print("DEC: ");
-  Serial.print(b);
-  Serial.print("  HEX: ");
-  Serial.print(get_hex_string(b));
-  Serial.print("  BIN: ");
-  Serial.println(get_binary_string(b));
-}
-
-void print_hex(byte b)
-{
-  Serial.print("0x ");
-  Serial.println(get_hex_string(b));
 }
 
 byte get_button_byte()
 {
   byte output = 0;
-  for (int i = 0; i <= 8; i++)
-  {
+  for (int i = 0; i <= 8; i++) {
     (!digitalRead(bit_button[i])) ? (bitSet(output, i)) : (0);
   }
   return output;
+}
+
+byte update_guess_hex()
+{
+  button_byte = get_button_byte();
+  debug_byte("guess before", guess);
+  if(button_byte == 1){
+    guess = set_high(guess, pot_to_hex());
+  }
+  else{
+    guess = set_low(guess, pot_to_hex());
+  }
+  debug_byte("guess after", guess);
+}
+
+byte pot_to_hex()
+{
+  return analogRead(pot) / 64;
 }
 
 void draw_byte(byte b)
@@ -125,7 +146,7 @@ void draw_byte(byte b)
   String s = get_binary_string(b);
   display.setTextSize(2);
   display.setTextColor(WHITE);
-  display.setCursor(0,0);
+  display.setCursor(0, 0);
   display.clearDisplay();
   display.println(s);
   display.display();
@@ -138,27 +159,20 @@ void debug_byte(String s, byte b)
   Serial.println(get_binary_string(b));
 }
 
-void update_guess()
+void update_guess_binary()
 {
-  for(int i=0; i<=8; i++)
-  {
-    if(bitRead(new_presses, i))
-    {
-      bitWrite(guess, i, !bitRead(guess, i));
-    }
-  }
-}
-
-void update_new_presses()
-{
+  button_byte = get_button_byte();
   new_presses = 0;
-  for(int i=0; i<=8; i++)
-  {
-    if((bitRead(button_byte, i)) && (!bitRead(last_button_byte, i)))
-    {
+  for (int i = 0; i <= 8; i++) {
+    if ((bitRead(button_byte, i)) && (!bitRead(last_button_byte, i))) {
       bitSet(new_presses, i);
     }
   }
   last_button_byte = button_byte;
+  for (int i = 0; i <= 8; i++) {
+    if (bitRead(new_presses, i)) {
+      bitWrite(guess, i, !bitRead(guess, i));
+    }
+  }
 }
 

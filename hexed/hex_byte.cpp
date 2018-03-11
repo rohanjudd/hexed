@@ -14,6 +14,21 @@ byte get_low(byte b)
   return b & 0x0F;
 }
 
+byte set_high(byte b, byte c)
+{
+  c = c << 4;
+  b = b & 15; // erase high nibble
+  b = b | c;
+  return b;
+}
+
+byte set_low(byte b, byte c)
+{
+  b = b & 240; // erase low nibble
+  b = b | c;
+  return b;
+}
+
 byte generate_byte()
 {
   return byte(random(0, 255));
