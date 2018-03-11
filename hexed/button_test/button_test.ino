@@ -61,8 +61,10 @@ void loop()
   //digitalWrite(led2, !state);
   state = !state;
   freq = pot1 * 3 + (digitalRead(buttons[0]) * 200);
-  //tone(piezo,freq);
-  delay(50);
+  tone(piezo,freq);
+  //delay(50);
+  //noTone(piezo);
+  delay(0);
 }
 
 byte get_button_byte()

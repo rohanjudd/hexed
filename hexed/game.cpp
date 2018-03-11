@@ -30,6 +30,37 @@ byte Game::get_input_mode()
 {
   return _input_mode;
 }
+
+String Game::get_target_string()
+{
+  String target_text = "";
+  switch (_output_mode) {
+    case 0:
+      target_text += "0x";
+      target_text += get_hex_string(_target);
+      break;
+    case 1:
+      //target_text += "0b";
+      target_text += get_binary_string(_target);
+      break;
+    case 2:
+      target_text += String(_target);
+      break;
+    default:
+      break;
+  }
+  return target_text;
+}
+
+String Game::get_mode_string()
+{
+  String mode_text = "";
+  mode_text += FORMAT[_input_mode];
+  mode_text += " to ";
+  mode_text += FORMAT[_output_mode];
+  return mode_text;
+}
+
 void Game::change_input_mode()
 {
   _input_mode = (_input_mode + 1 ) % 3;
@@ -38,7 +69,6 @@ void Game::change_input_mode()
   }
   new_target();
 }
-
 void Game::change_output_mode()
 {
   _output_mode = (_output_mode + 1 ) % 3;
@@ -59,26 +89,6 @@ void Game::change_mode()
     _output_mode = 0;
   }
   new_target();
-}
-String Game::target_to_string()
-{
-  String target_text = "";
-  switch (_output_mode) {
-    case 0:
-      target_text += "0x";
-      target_text += get_hex_string(_target);
-      break;
-    case 1:
-      //target_text += "0b";
-      target_text += get_binary_string(_target);
-      break;
-    case 2:
-      target_text += String(_target);
-      break;
-    default:
-      break;
-  }
-  return target_text;
 }
 
 boolean Game::check_guess(byte b)

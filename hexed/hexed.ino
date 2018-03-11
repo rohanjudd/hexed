@@ -51,19 +51,22 @@ void setup()
   Serial.begin(115200);
   Serial.println("Hexed");
   hex_game.new_target();
+  display_mode();
 }
 
 void loop()
 {
   check_for_mode_change();
-  if(hex_game.get_input_mode()){
+  if (hex_game.get_input_mode()) {
     update_guess_binary();
   }
-  else{
+  else {
     update_guess_hex();
   }
   update_screen();
-  check_guess();
+  if (hex_game.get_input_mode() || button_byte == 0) {
+    check_guess();
+  }
   delay(50);
 }
 
@@ -73,6 +76,7 @@ void check_for_mode_change()
     Serial.println("button_a pressed");
     if (!button_a_last) {
       hex_game.change_mode();
+      display_mode();
       guess = 0;
     }
     button_a_last = true;
@@ -90,16 +94,26 @@ void check_guess()
     guess = 0;
   }
 }
+
+void display_mode()
+{
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.println(hex_game.get_mode_string());
+  display.display();
+  delay(500);
+}
+
 void update_screen()
 {
   display.clearDisplay();
   display.setCursor(0, 0);
-  display.println(hex_game.target_to_string());
+  display.println(hex_game.get_target_string());
   display.setCursor(0, 16);
-  if(hex_game.get_input_mode()){
+  if (hex_game.get_input_mode()) {
     display.println(get_binary_string(guess));
   }
-  else{
+  else {
     display.println(get_hex_string(guess));
   }
   display.display();
@@ -126,14 +140,12 @@ byte get_button_byte()
 byte update_guess_hex()
 {
   button_byte = get_button_byte();
-  debug_byte("guess before", guess);
-  if(button_byte == 1){
+  if (button_byte == 2) {
     guess = set_high(guess, pot_to_hex());
   }
-  else{
+  if (button_byte == 1) {
     guess = set_low(guess, pot_to_hex());
   }
-  debug_byte("guess after", guess);
 }
 
 byte pot_to_hex()
