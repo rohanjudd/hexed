@@ -1,0 +1,15 @@
+Forward Design Changes Report
+-----------------------------
+
+Report Written:     Sunday, March 11, 2018
+Design Path:        C:\Users\Rohan\Documents\hexed\hexed_pcb.pcb
+Design Title:       
+Created:            11/03/2018 18:22:47
+Last Saved:         11/03/2018 18:23:40
+Editing Time:       2 min
+Units:              thou (precision 0)
+
+Added component reference "R2" of component "Resistor", package "SM".
+
+
+End Of Report.
