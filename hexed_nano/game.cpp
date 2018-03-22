@@ -12,8 +12,8 @@ static String FORMAT[3] = {"HEX", "BIN", "DEC"};
 
 Game::Game(byte arg)
 {
-  _input_mode = 0
-  _output_mode = 1;
+  _input_mode = 1;
+  _output_mode = 0;
 }
 
 void Game::new_target()

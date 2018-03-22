@@ -4,18 +4,14 @@
 #include "hex_byte.h"
 #include "game.h"
 
-#include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include <Encoder.h>
 
 #define OLED_DC     21
 #define OLED_CS     A1
 #define OLED_RESET  A5
 Adafruit_SSD1306 display(OLED_DC, OLED_RESET, OLED_CS);
-
-Encoder myEnc(27,33);
 
 byte bit_button[8] = {4, 5, 6, 7, 8, 9, 10, 12};
 byte button_byte = 0;

@@ -31,7 +31,7 @@ void setup()
 
 void loop() 
 {
-  touch_value = touchRead(TOUCH_PIN);
+  touch_value = touchRead(32);
   Serial.println(touch_value);
   x = myEnc.read();
   display.clearDisplay();
