@@ -27,10 +27,11 @@ byte led1 = 2;
 byte led2 = 3;
 byte button_a = 14;
 boolean button_a_last = false;
-byte button_b = 15;
+byte button_b = 32;
 byte piezo = 11;
 boolean state = false;
 int freq = 0;
+
 
 Game hex_game(0);
 
@@ -40,8 +41,6 @@ void setup()
   for (int i = 0; i < 9; i++) {
     pinMode(bit_button[i], INPUT_PULLUP);
   }
-  pinMode(button_a, INPUT_PULLUP);
-  pinMode(button_b, INPUT_PULLUP);
   pinMode(pot, INPUT);
   pinMode(led1, OUTPUT);
   pinMode(led2, OUTPUT);
@@ -49,6 +48,9 @@ void setup()
   pinMode(16, INPUT);
   randomSeed(analogRead(16));
 */
+  pinMode(button_a, INPUT_PULLUP);
+  pinMode(button_b, INPUT_PULLUP);
+  
   display.begin(SSD1306_SWITCHCAPVCC);
   display.display();
   display.setTextSize(2);
@@ -63,7 +65,7 @@ void setup()
 
 void loop()
 {
-  check_for_mode_change();
+  //check_for_mode_change();
   if (hex_game.get_input_mode()) {
     update_guess_binary();
   }
@@ -71,9 +73,9 @@ void loop()
     update_guess_hex();
   }
   update_screen();
-  if (hex_game.get_input_mode() || button_byte == 0) {
+  //if (hex_game.get_input_mode() || button_byte == 0) {
     check_guess();
-  }
+  //}
   delay(50);
 }
 
@@ -146,18 +148,24 @@ byte get_button_byte()
 
 byte update_guess_hex()
 {
-  button_byte = get_button_byte();
-  if (button_byte == 2) {
-    guess = set_high(guess, pot_to_hex());
+  if (digitalRead(button_a) == 0)
+  {
+    guess = set_high(guess, encoder_to_hex());
   }
-  if (button_byte == 1) {
-    guess = set_low(guess, pot_to_hex());
+  if (digitalRead(button_b) == 0)
+  {
+    guess = set_low(guess, encoder_to_hex());
   }
 }
 
 byte pot_to_hex()
 {
   return analogRead(pot) / 64;
+}
+
+byte encoder_to_hex()
+{
+  return (myEnc.read() /4) % 16;
 }
 
 void draw_byte(byte b)
